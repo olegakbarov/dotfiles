@@ -1,1 +1,84 @@
-/Users/oleg/.atom/snippets.cson
+# Your snippets
+#
+# Atom snippets allow you to enter a simple prefix in the editor and hit tab to
+# expand the prefix into a larger code block with templated values.
+#
+# You can create a new snippet in this file by typing "snip" and then hitting
+# tab.
+#
+# An example CoffeeScript snippet to expand log to console.log:
+#
+# '.source.coffee':
+#   'Console log':
+#     'prefix': 'log'
+#     'body': 'console.log $1'
+#
+# This file uses CoffeeScript Object Notation (CSON).
+# If you are unfamiliar with CSON, you can read more about it here:
+# https://github.com/bevry/cson#what-is-cson
+
+#########################
+# JAVASCRIPT
+#########################
+
+'package.json':
+  'package':
+    'prefix': 'package'
+    'body': '{
+      "name": "",
+      "version": "0.0.1",
+      "description": "",
+      "main": "",
+      "repository": {
+        "type": "git",
+        "url": ""
+      },
+      "author": "",
+      "license": "MIT",
+      "bugs": {
+        "url": ""
+      },
+      "homepage": "",
+      "dependencies": {}
+    }
+'
+'.source.md':
+  'Code for md':
+    'prefix': 'code'
+    'body': '```$1\n$2```'
+
+'.source.js':
+  'Console log':
+    'prefix': 'log'
+    'body': 'console.log($1)'
+
+  'import es6 modules':
+    'prefix': 'i'
+    'body': 'import $1 from $2'
+
+  'function expression':
+    'prefix': 'func'
+    'body':
+      'function($1) {$2}'
+
+  'React Class':
+    'prefix': 'rc'
+    'body':
+      '
+        export default class $1 extends React.Component {
+        \n\trender() {
+        \n\t\treturn (
+        \n\t\t\t$2
+        \n\t\t);
+        \n\t}
+        \n}
+      '
+
+#########################
+# CLOJURE
+#########################
+
+'.source.clojure':
+  'console.log for ClojureScript':
+    'prefix': 'log'
+    'body': '(js/console.log $1)'
