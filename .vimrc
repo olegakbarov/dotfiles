@@ -1,35 +1,52 @@
 set nocompatible
 filetype on
 
-" Map the leader key to ,
 let mapleader=","
 
 call plug#begin('~/.vim/plugged')
   Plug 'kien/ctrlp.vim'
   Plug 'bling/vim-airline'
+  Plug 'vim-airline/vim-airline-themes'
   Plug 'fatih/vim-go'
   Plug 'mileszs/ack.vim'
   Plug 'mattn/webapi-vim'
   Plug 'mattn/gist-vim'
   Plug 'scrooloose/nerdtree'
+  Plug 'Xuyuanp/nerdtree-git-plugin'
   Plug 'digitaltoad/vim-pug'
   Plug 'tpope/vim-git'
   Plug 'tpope/vim-fugitive'
-  Plug 'davidosomething/vim-jsdoc'
   Plug 'majutsushi/tagbar'
   Plug 'craigemery/vim-autotag'
   Plug 'mhartington/oceanic-next'
   Plug 'airblade/vim-gitgutter'
   Plug 'scrooloose/nerdcommenter'
-  Plug 'mxw/vim-jsx'
   Plug 'mhinz/vim-startify'
-  Plug 'honza/vim-snippets'
-  Plug 'bhurlow/vim-parinfer'
-  Plug 'tpope/vim-classpath'
-  Plug 'tpope/vim-fireplace'
-  Plug 'tpope/vim-salve'
-  Plug 'Xuyuanp/nerdtree-git-plugin'
+  Plug 'cespare/vim-toml'
   Plug 'w0rp/ale'
+  Plug 'chrisbra/Colorizer'
+  Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
+  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+  Plug 'junegunn/fzf.vim'
+
+  Plug 'SirVer/ultisnips'
+  Plug 'honza/vim-snippets'
+
+  " Clojure
+  Plug 'bhurlow/vim-parinfer', { 'for': 'clojure' }
+  Plug 'tpope/vim-classpath', { 'for': 'clojure' }
+  Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
+  Plug 'tpope/vim-salve', { 'for': 'clojure' }
+
+
+  " JavaScript
+  Plug 'flowtype/vim-flow'
+  Plug 'othree/yajs.vim', { 'for': 'javascript' }
+  Plug 'othree/es.next.syntax.vim',  { 'for': 'javascript' }
+  Plug 'mxw/vim-jsx',  { 'for': 'javascript' }
+  Plug '1995eaton/vim-better-javascript-completion', { 'for': 'javascript' }
+  Plug 'davidosomething/vim-jsdoc', { 'for': 'javascript' }
+
 call plug#end()
 
 if has('autocmd')
@@ -45,7 +62,6 @@ if has("autocmd")
 endif
 
 set backspace=indent,eol,start
-set guifont=Hack:h14
 set noswapfile
 set smarttab
 set secure
@@ -53,7 +69,7 @@ set exrc
 set ttyfast
 set noautoindent
 set nocindent
-set omnifunc=syntaxcomplete#Complete
+" set omnifunc=syntaxcomplete#Complete
 set mouse=a
 set nrformats-=octal
 set ttimeout
@@ -222,7 +238,7 @@ endif
 nnoremap <Leader>w :w<CR>
 vmap <Leader>y "+y
 vmap <Leader>d "+d
-nmap <Leader>p "+p
+nmap <Leader>p "+r
 nmap <Leader>P "+P
 vmap <Leader>p "+p
 vmap <Leader>P "+P
@@ -309,9 +325,6 @@ nmap <C-c> :NERDTreeCWD<CR>
 nmap <C-\> :NERDTreeFind<CR>
 " vim:set ft=vim sw=2 ts=2:
 
-noremap <Leader>h :<C-u>split<CR>
-noremap <Leader>v :<C-u>vsplit<CR>
-
 "Indent
 " Indent lines with cmd+[ and cmd+]
 nmap <D-]> >>
@@ -330,6 +343,8 @@ noremap <Left> <NOP>
 noremap <Right> <NOP>
 
 " Switch splits
+noremap <Leader>h :<C-u>split<CR>
+noremap <Leader>v :<C-u>vsplit<CR>
 nnoremap <C-h> <C-W>h
 nnoremap <C-j> <C-W>j
 nnoremap <C-k> <C-W>k
@@ -337,19 +352,29 @@ nnoremap <C-l> <C-W>l
 
 let g:NERDSpaceDelims = 1
 let g:NERDDefaultAlign = 'left'
+let g:NERDCustomDelimiters = { 'jsx': { 'top': '{/*','bottom': '*/}' } }
 
 " Enable omni completion.
-autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+" autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+" autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+" autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+" autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+" autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+
+" Snippets
+" Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit="vertical"
 
 " JS specific stuff
 let g:ale_enabled = 1
 let g:ale_javascript_eslint_options = '--cache'
 let g:ale_javascript_eslint_executable = 'eslint'
-let g:ale_linters = {'javascript': ['eslint']}
+let g:ale_linters = {'javascript': ['eslint', 'flow']}
 let g:ale_linters.javascript = ['eslint']
 let g:ale_linters.html = []
 let g:ale_echo_cursor = 1
@@ -373,8 +398,8 @@ let g:ale_statusline_format = ['💣 %d', '🚩 %d', '']
 " let g:ale_statusline_format = ['%d error(s)', '%d warning(s)', 'OK']
 
 " pretty errors
-let g:ale_sign_error = '💔'
-let g:ale_sign_warning = '⚠️'
+let g:ale_sign_error = 'X'
+let g:ale_sign_warning = '!!'
 highlight clear ALEErrorSign
 highlight clear ALEWarningSign
 
@@ -388,7 +413,17 @@ colorscheme OceanicNext
 highlight LineNr guibg=#1b2b34
 hi StatusLine guibg=#1b2b34
 hi VertSplit guibg=#1b2b34
+hi SignColumn guibg=#1b2b34
+let g:airline_theme='bubblegum'
+set guifont=Hack:h14
 
 set fillchars="" " show divider chars
 autocmd BufNewFile,BufRead *.boot set syntax=clojure
+autocmd BufNewFile,BufRead .eslintrc set syntax=yaml
+autocmd BufNewFile,BufRead nginx.conf set syntax=nginx
+autocmd BufNewFile,BufRead Dockerfile.* set syntax=yaml
+autocmd BufNewFile,BufRead *.Dockerfile set syntax=yaml
+
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip,node_modules/*
+
 
