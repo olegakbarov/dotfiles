@@ -7,37 +7,55 @@ call plug#begin('~/.vim/plugged')
   Plug 'kien/ctrlp.vim'
   Plug 'bling/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
-  Plug 'fatih/vim-go'
   Plug 'mileszs/ack.vim'
   Plug 'mattn/webapi-vim'
   Plug 'mattn/gist-vim'
   Plug 'scrooloose/nerdtree'
   Plug 'Xuyuanp/nerdtree-git-plugin'
   Plug 'digitaltoad/vim-pug'
-  Plug 'tpope/vim-git'
-  Plug 'tpope/vim-fugitive'
   Plug 'majutsushi/tagbar'
   Plug 'craigemery/vim-autotag'
   Plug 'mhartington/oceanic-next'
-  Plug 'airblade/vim-gitgutter'
   Plug 'scrooloose/nerdcommenter'
   Plug 'mhinz/vim-startify'
   Plug 'cespare/vim-toml'
-  Plug 'w0rp/ale'
   Plug 'chrisbra/Colorizer'
-  Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
+  " Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
   Plug 'junegunn/fzf.vim'
-
+  Plug 'w0rp/ale'
   Plug 'SirVer/ultisnips'
   Plug 'honza/vim-snippets'
+
+  " Git
+  Plug 'tpope/vim-git'
+  Plug 'tpope/vim-fugitive'
+  Plug 'airblade/vim-gitgutter'
+  Plug 'vim-scripts/gitignore'
+
+  " Zen mode for markdown
+  Plug 'junegunn/goyo.vim'
+  Plug 'amix/vim-zenroom2'
+
+  " Go
+  Plug 'fatih/vim-go'
+  " Scala
+  Plug 'derekwyatt/vim-scala'
+
+  " Haskell
+  Plug 'Shougo/vimproc.vim', {'do' : 'make'}
+  Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
+  Plug 'enomsg/vim-haskellConcealPlus', { 'for': 'haskell' }
+  Plug 'eagletmt/ghcmod-vim', { 'for': 'haskell' }
+  Plug 'eagletmt/neco-ghc', { 'for': 'haskell' }
+  Plug 'Twinside/vim-hoogle', { 'for': 'haskell' }
+  Plug 'mpickering/hlint-refactor-vim', { 'for': 'haskell' }
 
   " Clojure
   Plug 'bhurlow/vim-parinfer', { 'for': 'clojure' }
   Plug 'tpope/vim-classpath', { 'for': 'clojure' }
   Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
   Plug 'tpope/vim-salve', { 'for': 'clojure' }
-
 
   " JavaScript
   Plug 'flowtype/vim-flow'
@@ -46,6 +64,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'mxw/vim-jsx',  { 'for': 'javascript' }
   Plug '1995eaton/vim-better-javascript-completion', { 'for': 'javascript' }
   Plug 'davidosomething/vim-jsdoc', { 'for': 'javascript' }
+  Plug 'fleischie/vim-styled-components'
 
 call plug#end()
 
@@ -101,7 +120,7 @@ set shiftwidth=2        " Indentation amount for < and > commands.
 set noerrorbells        " No beeps.
 set modeline            " Enable modeline.
 set esckeys             " Cursor keys in insert mode.
-set linespace=18         " Set line-spacing to minimum.
+set linespace=18        " Set line-spacing to minimum.
 set nojoinspaces        " Prevents inserting two spaces after punctuation on a join (J)
 set splitbelow          " Horizontal split below current.
 set splitright          " Vertical split to right of current.
@@ -130,7 +149,6 @@ match ExtraWhitespace /\s\+$\|\t/
 if has('path_extra')
   setglobal tags-=./tags tags^=./tags;
 endif
-
 
 " Remove special characters for filename
 set isfname-=:
@@ -268,11 +286,6 @@ nmap <F8> :TagbarToggle<CR>
 " }
 
 autocmd Filetype gitcommit setlocal spell textwidth=72
-autocmd FileType go set sw=4
-autocmd FileType go set tabstop=4
-autocmd FileType go set sts=0
-autocmd FileType go set expandtab
-autocmd FileType go set smarttab
 autocmd FileType javascript setlocal expandtab sw=2 ts=2 sts=2
 autocmd FileType json setlocal expandtab sw=2 ts=2 sts=2
 autocmd FileType python setlocal expandtab sw=4 ts=4 sts=4
@@ -301,13 +314,17 @@ endif
 
 
 " Vim-Go related Settings
+autocmd FileType go set sw=4
+autocmd FileType go set tabstop=4
+autocmd FileType go set sts=0
+autocmd FileType go set expandtab
+autocmd FileType go set smarttab
 let g:go_errcheck_bin="/Users/vinitkumar/go/bin/errcheck"
 let g:go_golint_bin="/Users/vinitkumar/go/bin/golint"
 let g:go_fmt_command = "goimports"
 let g:go_fmt_autosave = 1
 let g:github_upstream_issues = 1
 let g:go_disable_autoinstall = 0
-
 
 
 "Nerdtree
@@ -354,7 +371,6 @@ let g:NERDSpaceDelims = 1
 let g:NERDDefaultAlign = 'left'
 let g:NERDCustomDelimiters = { 'jsx': { 'top': '{/*','bottom': '*/}' } }
 
-" Enable omni completion.
 " autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
 " autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
 " autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
@@ -370,12 +386,17 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
 
-" JS specific stuff
+" Haskell
+let $PATH = $PATH . ':' . expand('~/.cabal/bin')
+
+" JavaScript
+" map gl :FlowJumpToDef<CR>
+
 let g:ale_enabled = 1
 let g:ale_javascript_eslint_options = '--cache'
 let g:ale_javascript_eslint_executable = 'eslint'
 let g:ale_linters = {'javascript': ['eslint', 'flow']}
-let g:ale_linters.javascript = ['eslint']
+" let g:ale_linters.javascript = ['eslint']
 let g:ale_linters.html = []
 let g:ale_echo_cursor = 1
 let g:ale_echo_msg_error_str = 'Error'
@@ -398,8 +419,8 @@ let g:ale_statusline_format = ['💣 %d', '🚩 %d', '']
 " let g:ale_statusline_format = ['%d error(s)', '%d warning(s)', 'OK']
 
 " pretty errors
-let g:ale_sign_error = 'X'
-let g:ale_sign_warning = '!!'
+let g:ale_sign_error = '⨉'
+let g:ale_sign_warning = '⚠'
 highlight clear ALEErrorSign
 highlight clear ALEWarningSign
 
@@ -407,6 +428,13 @@ highlight clear ALEWarningSign
 set t_Co=256
 if (has("termguicolors"))
   set termguicolors
+endif
+
+if &term =~ '256color'
+  " disable Background Color Erase (BCE) so that color schemes
+  " render properly when inside 256-color tmux and GNU screen.
+  " see also http://snk.tuxfamily.org/log/vim-256color-bce.html
+  set t_ut=
 endif
 
 colorscheme OceanicNext
@@ -426,4 +454,13 @@ autocmd BufNewFile,BufRead *.Dockerfile set syntax=yaml
 
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,node_modules/*
 
+" Naviagte buffers
+map gn :bn<cr>
+map gp :bp<cr>
+map gd :bd<cr>
+
+" Grep
+:nnoremap Gr :grep <cword> %:p:h/*<CR>
+:nnoremap gR :grep '\b<cword>\b' *<CR>
+:nnoremap GR :grep '\b<cword>\b' %:p:h/*<CR>
 
