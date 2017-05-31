@@ -4,6 +4,7 @@ filetype on
 let mapleader=","
 
 call plug#begin('~/.vim/plugged')
+  Plug 'mileszs/ack.vim'
   Plug 'kien/ctrlp.vim'
   Plug 'bling/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
@@ -37,10 +38,17 @@ call plug#begin('~/.vim/plugged')
   Plug 'junegunn/goyo.vim'
   Plug 'amix/vim-zenroom2'
 
+  " Rust
+  Plug 'rust-lang/rust.vim'
+
   " Go
   Plug 'fatih/vim-go'
+
   " Scala
-  Plug 'derekwyatt/vim-scala'
+  Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
+  Plug 'ensime/ensime-vim', { 'for': 'scala' }
+  Plug 'derekwyatt/vim-sbt', { 'for': 'scala' }
+  Plug 'GEverding/vim-hocon', { 'for': 'scala' }
 
   " Haskell
   Plug 'Shougo/vimproc.vim', {'do' : 'make'}
@@ -58,13 +66,13 @@ call plug#begin('~/.vim/plugged')
   Plug 'tpope/vim-salve', { 'for': 'clojure' }
 
   " JavaScript
-  Plug 'flowtype/vim-flow'
+  Plug 'flowtype/vim-flow', { 'for': 'javascript' }
   Plug 'othree/yajs.vim', { 'for': 'javascript' }
   Plug 'othree/es.next.syntax.vim',  { 'for': 'javascript' }
   Plug 'mxw/vim-jsx',  { 'for': 'javascript' }
   Plug '1995eaton/vim-better-javascript-completion', { 'for': 'javascript' }
   Plug 'davidosomething/vim-jsdoc', { 'for': 'javascript' }
-  Plug 'fleischie/vim-styled-components'
+  Plug 'fleischie/vim-styled-components', { 'for': 'javascript' }
 
 call plug#end()
 
