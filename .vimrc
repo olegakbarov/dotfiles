@@ -8,7 +8,6 @@ call plug#begin('~/.vim/plugged')
   Plug 'kien/ctrlp.vim'
   Plug 'bling/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
-  Plug 'mileszs/ack.vim'
   Plug 'mattn/webapi-vim'
   Plug 'mattn/gist-vim'
   Plug 'scrooloose/nerdtree'
@@ -16,17 +15,30 @@ call plug#begin('~/.vim/plugged')
   Plug 'digitaltoad/vim-pug'
   Plug 'majutsushi/tagbar'
   Plug 'craigemery/vim-autotag'
-  Plug 'mhartington/oceanic-next'
+
   Plug 'scrooloose/nerdcommenter'
   Plug 'mhinz/vim-startify'
   Plug 'cespare/vim-toml'
   Plug 'chrisbra/Colorizer'
-  " Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
   Plug 'junegunn/fzf.vim'
   Plug 'w0rp/ale'
+  Plug 'terryma/vim-multiple-cursors'
+  Plug 'lifepillar/vim-cheat40'
+  " Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
+
+  Plug 'mhartington/oceanic-next'
+  Plug 'trevordmiller/nova-vim'
+
+
   Plug 'SirVer/ultisnips'
   Plug 'honza/vim-snippets'
+
+  Plug 'hail2u/vim-css3-syntax'
+
+  " Search with Ag & Dash
+  Plug 'mileszs/ack.vim'
+  Plug 'rizzatti/dash.vim'
 
   " Git
   Plug 'tpope/vim-git'
@@ -34,15 +46,18 @@ call plug#begin('~/.vim/plugged')
   Plug 'airblade/vim-gitgutter'
   Plug 'vim-scripts/gitignore'
 
+  " SQL
+  Plug 'lifepillar/pgsql.vim'
+
   " Zen mode for markdown
   Plug 'junegunn/goyo.vim'
   Plug 'amix/vim-zenroom2'
 
   " Rust
-  Plug 'rust-lang/rust.vim'
+  Plug 'rust-lang/rust.vim', { 'for': 'rust' }
 
   " Go
-  Plug 'fatih/vim-go'
+  Plug 'fatih/vim-go', { 'for': 'go' }
 
   " Scala
   Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
@@ -66,14 +81,13 @@ call plug#begin('~/.vim/plugged')
   Plug 'tpope/vim-salve', { 'for': 'clojure' }
 
   " JavaScript
-  Plug 'flowtype/vim-flow', { 'for': 'javascript' }
+  Plug 'pangloss/vim-javascript',  { 'for': 'javascript' }
+  " Plug 'othree/es.next.syntax.vim',  { 'for': 'javascript' }
   Plug 'othree/yajs.vim', { 'for': 'javascript' }
-  Plug 'othree/es.next.syntax.vim',  { 'for': 'javascript' }
   Plug 'mxw/vim-jsx',  { 'for': 'javascript' }
-  Plug '1995eaton/vim-better-javascript-completion', { 'for': 'javascript' }
-  Plug 'davidosomething/vim-jsdoc', { 'for': 'javascript' }
   Plug 'fleischie/vim-styled-components', { 'for': 'javascript' }
 
+  Plug 'elzr/vim-json'
 call plug#end()
 
 if has('autocmd')
@@ -96,23 +110,19 @@ set exrc
 set ttyfast
 set noautoindent
 set nocindent
-" set omnifunc=syntaxcomplete#Complete
 set mouse=a
 set nrformats-=octal
 set ttimeout
 set ttimeoutlen=100
-
-" Search
+set nocursorline
+set nocursorcolumn
+set scrolljump=5
 set hlsearch            " Highlight search results.
 set ignorecase          " Make searching case insensitive
 set smartcase           " ... unless the query has capital letters.
 set incsearch           " Incremental search.
 set gdefault            " Use 'g' flag by default with :s/foo/bar/.
 set magic               " Use 'magic' patterns (extended regular expressions).
-"This unsets the "last search pattern" register by hitting return
-
-" dont work, produce error
-" nnoremap <C-n>:noh
 
 " Formatting
 set showcmd             " Show (partial) command in status line.
@@ -128,7 +138,7 @@ set shiftwidth=2        " Indentation amount for < and > commands.
 set noerrorbells        " No beeps.
 set modeline            " Enable modeline.
 set esckeys             " Cursor keys in insert mode.
-set linespace=18        " Set line-spacing to minimum.
+set linespace=19        " Set line-spacing to minimum.
 set nojoinspaces        " Prevents inserting two spaces after punctuation on a join (J)
 set splitbelow          " Horizontal split below current.
 set splitright          " Vertical split to right of current.
@@ -194,7 +204,6 @@ endif
 
 autocmd BufNewFile,BufRead *.py set tabstop=4 softtabstop=4 shiftwidth=4 textwidth=79 expandtab autoindent fileformat=unix
 
-
 " Remove trailing spaces before saving text files
 " http://vim.wikia.com/wiki/Remove_trailing_spaces
 autocmd BufWritePre * :call StripTrailingWhitespace()
@@ -203,7 +212,6 @@ function! StripTrailingWhitespace()
     normal mz
     normal Hmy
     if &filetype == 'mail'
-" Preserve space after e-mail signature separator
       %s/\(^--\)\@<!\s\+$//e
     else
       %s/\s\+$//e
@@ -225,9 +233,19 @@ nnoremap k gk
 " Make HOME and END behave like shell
 inoremap <C-E> <End>
 inoremap <C-A> <Home>
-" New tabs shortcut
+
+"Tabs
 nnoremap <C-t> :tabnew<Enter>
 inoremap <C-t> <Esc>:tabnew<Space>
+map <C-t><]> :tabr<cr>
+map <C-t><[> :tabl<cr>
+map <C-t><left> :tabp<cr>
+map <C-t><right> :tabn<cr>
+
+" TODO: test fomat json
+map <C-B> :%!python -m json.tool
+
+inoremap <C-j> :tabnext<CR>
 
 " GUI Options {
 set guioptions-=m " Removes top menubar
@@ -248,11 +266,8 @@ function! NumberToggle()
   endif
 endfunc
 
-" Sets a status line. If in a Git repository, shows the current branch.
-" Also shows the current file name, line and column number.
 if has('statusline')
   set laststatus=2
-  " Broken down into easily includeable segments
   set statusline=%<%f\                     " Filename
   set statusline+=%w%h%m%r                 " Options
   set statusline+=%{fugitive#statusline()} " Git Hotness
@@ -270,28 +285,22 @@ vmap <Leader>p "+p
 vmap <Leader>P "+P
 nmap <F8> :TagbarToggle<CR>
 
-" Plug Settings {
-  " Airline {
-    let g:airline#extensions#tabline#enabled = 2
-    let g:airline#extensions#tabline#fnamemod = ':t'
-    let g:airline#extensions#tabline#left_sep = ' '
-    let g:airline#extensions#tabline#left_alt_sep = '|'
-    let g:airline#extensions#tabline#right_sep = ' '
-    let g:airline#extensions#tabline#right_alt_sep = '|'
-    let g:airline_left_sep = ' '
-    let g:airline_left_alt_sep = '|'
-    let g:airline_right_sep = ' '
-    let g:airline_right_alt_sep = '|'
-  " }
-  " CtrlP {
-    " Open file menu
-    nnoremap <Leader>o :CtrlP<CR>
-    " Open buffer menu
-    nnoremap <Leader>b :CtrlPBuffer<CR>
-    " Open most recently used files
-    nnoremap <Leader>f :CtrlPMRUFiles<CR>
-  " }
-" }
+" Airline
+let g:airline#extensions#tabline#enabled = 2
+let g:airline#extensions#tabline#fnamemod = ':t'
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:airline#extensions#tabline#right_sep = ' '
+let g:airline#extensions#tabline#right_alt_sep = '|'
+let g:airline_left_sep = ' '
+let g:airline_left_alt_sep = '|'
+let g:airline_right_sep = ' '
+let g:airline_right_alt_sep = '|'
+
+" CtrlP
+nnoremap <Leader>o :CtrlP<CR>
+nnoremap <Leader>b :CtrlPBuffer<CR>
+nnoremap <Leader>f :CtrlPMRUFiles<CR>
 
 autocmd Filetype gitcommit setlocal spell textwidth=72
 autocmd FileType javascript setlocal expandtab sw=2 ts=2 sts=2
@@ -299,19 +308,15 @@ autocmd FileType json setlocal expandtab sw=2 ts=2 sts=2
 autocmd FileType python setlocal expandtab sw=4 ts=4 sts=4
 autocmd FileType c setlocal expandtab sw=2 ts=2 sts=2
 autocmd FileType php setlocal expandtab sw=2 ts=2 sts=2
-autocmd BufNewFile,BufReadPost *.jade set filetype=pug
 autocmd FileType jade setlocal expandtab sw=2 ts=2 sts=2
 autocmd FileType html setlocal expandtab sw=2 ts=2 sts=2
 autocmd FileType jade setlocal expandtab sw=2 ts=2 sts=2
 autocmd FileType less setlocal expandtab sw=2 ts=2 sts=2
 autocmd FileType htmldjango setlocal expandtab sw=2 ts=2 sts=2
 autocmd FileType css setlocal expandtab sw=2 ts=2 sts=2
-au FileType go nmap <Leader>i <Plug>(go-info)
-au FileType go nmap <Leader>gd <Plug>(go-doc)
-au FileType go nmap <Leader>r <Plug>(go-run)
-au FileType go nmap <Leader>b <Plug>(go-build)
-au FileType go nmap <Leader>t <Plug>(go-test)
-au FileType go nmap gd <Plug>(go-def-tab)
+autocmd BufNewFile,BufReadPost *.jade set filetype=pug
+autocmd BufWritePost *.scala silent :EnTypeCheck
+
 augroup filetype
  au! BufRead,BufNewFile *.proto setfiletype proto
 augroup end
@@ -320,8 +325,25 @@ if executable('ag')
   let g:ackprg = 'ag --vimgrep'
 endif
 
+" Golang settings
+" au FileType go nmap <leader>r <Plug>(go-run)
+" au FileType go nmap <leader>b <Plug>(go-build)
+" au FileType go nmap <leader>t <Plug>(go-test)
+" au FileType go nmap <leader>c <Plug>(go-coverage)
+" au FileType go nmap <Leader>ds <Plug>(go-def-split)
+" au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
+" au FileType go nmap <Leader>dt <Plug>(go-def-tab)
+" au FileType go nmap <Leader>gd <Plug>(go-doc)
+" au FileType go nmap <Leader>gv <Plug>(go-doc-vertical)
+" au FileType go nmap <Leader>s <Plug>(go-implements)
+" au FileType go nmap <Leader>e <Plug>(go-rename)
 
-" Vim-Go related Settings
+au FileType go nmap <Leader>i <Plug>(go-info)
+au FileType go nmap <Leader>gd <Plug>(go-doc)
+au FileType go nmap <Leader>r <Plug>(go-run)
+au FileType go nmap <Leader>b <Plug>(go-build)
+au FileType go nmap <Leader>t <Plug>(go-test)
+au FileType go nmap gd <Plug>(go-def-tab)
 autocmd FileType go set sw=4
 autocmd FileType go set tabstop=4
 autocmd FileType go set sts=0
@@ -334,8 +356,8 @@ let g:go_fmt_autosave = 1
 let g:github_upstream_issues = 1
 let g:go_disable_autoinstall = 0
 
-
-"Nerdtree
+" Nerdtree
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite
 let g:NERDTreeIgnore=['\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
 let g:NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
 let g:NERDTreeShowBookmarks=1
@@ -344,14 +366,13 @@ let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
 let g:NERDTreeWinSize = 30
 let g:NERDTreeWinPos = "left"
 let NERDTreeShowHidden=1
-set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite
 map <C-u> :NERDTreeToggle<CR>
 nmap <C-c> :NERDTreeCWD<CR>
 nmap <C-\> :NERDTreeFind<CR>
-" vim:set ft=vim sw=2 ts=2:
+
+" nmap <C-"> :noh <CR>
 
 "Indent
-" Indent lines with cmd+[ and cmd+]
 nmap <D-]> >>
 nmap <D-[> <<
 vmap <D-[> <gv
@@ -367,7 +388,7 @@ noremap <Down> <NOP>
 noremap <Left> <NOP>
 noremap <Right> <NOP>
 
-" Switch splits
+" Switch
 noremap <Leader>h :<C-u>split<CR>
 noremap <Leader>v :<C-u>vsplit<CR>
 nnoremap <C-h> <C-W>h
@@ -375,15 +396,16 @@ nnoremap <C-j> <C-W>j
 nnoremap <C-k> <C-W>k
 nnoremap <C-l> <C-W>l
 
+" vertical to horizontal ( | -> -- )
+noremap <c-w>-  <c-w>t<c-w>K
+" horizontal to vertical ( -- -> | )
+noremap <c-w>\|  <c-w>t<c-w>H
+noremap <c-w>\  <c-w>t<c-w>H
+noremap <c-w>/  <c-w>t<c-w>H
+
 let g:NERDSpaceDelims = 1
 let g:NERDDefaultAlign = 'left'
 let g:NERDCustomDelimiters = { 'jsx': { 'top': '{/*','bottom': '*/}' } }
-
-" autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-" autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-" autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-" autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-" autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
 " Snippets
 " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
@@ -398,13 +420,13 @@ let g:UltiSnipsEditSplit="vertical"
 let $PATH = $PATH . ':' . expand('~/.cabal/bin')
 
 " JavaScript
-" map gl :FlowJumpToDef<CR>
-
+" let g:ale_javascript_eslint_use_global = 1
+" let g:aleale_javascript_eslint_executable = '/Users/oleg/.npm-packages/bin/eslint'
 let g:ale_enabled = 1
 let g:ale_javascript_eslint_options = '--cache'
-let g:ale_javascript_eslint_executable = 'eslint'
-let g:ale_linters = {'javascript': ['eslint', 'flow']}
-" let g:ale_linters.javascript = ['eslint']
+let g:ale_linters = {'jsx': ['eslint']}
+let g:ale_linters = {'javascript': ['eslint']}
+let g:ale_linter_aliases = {'jsx': 'css'}
 let g:ale_linters.html = []
 let g:ale_echo_cursor = 1
 let g:ale_echo_msg_error_str = 'Error'
@@ -418,17 +440,18 @@ let g:ale_lint_on_text_changed = 1
 let g:ale_linter_aliases = {}
 let g:ale_open_list = 0
 let g:ale_set_signs = 1
-" let g:ale_set_highlights = 1
+let g:ale_set_highlights = 1
 let g:ale_set_loclist = 1
 let g:ale_set_quickfix = 0
 let g:ale_sign_column_always = 0
 let g:ale_sign_offset = 1000000
-let g:ale_statusline_format = ['💣 %d', '🚩 %d', '']
-" let g:ale_statusline_format = ['%d error(s)', '%d warning(s)', 'OK']
-
-" pretty errors
-let g:ale_sign_error = '⨉'
-let g:ale_sign_warning = '⚠'
+let g:ale_statusline_format = ['🔥 %d', '⚠️  %d', '']
+let g:ale_statusline_format = ['%d error(s)', '%d warning(s)', 'OK']
+let g:ale_fixers = { 'javascript': ['eslint'] }
+let g:ale_fixers = { 'jsx': ['eslint'] }
+let g:ale_fix_on_save = 1
+let g:ale_sign_error = '>>'
+let g:ale_sign_warning = '--'
 highlight clear ALEErrorSign
 highlight clear ALEWarningSign
 
@@ -445,15 +468,26 @@ if &term =~ '256color'
   set t_ut=
 endif
 
-colorscheme OceanicNext
-highlight LineNr guibg=#1b2b34
-hi StatusLine guibg=#1b2b34
-hi VertSplit guibg=#1b2b34
-hi SignColumn guibg=#1b2b34
-let g:airline_theme='bubblegum'
-set guifont=Hack:h14
+" colorscheme OceanicNext
+" colorscheme quantum
+" colorscheme wwdc17
+" colorscheme FlatWhite
+colorscheme nova
+" highlight LineNr guibg=#1b2b34
+" hi StatusLine guibg=#1b2b34
+" hi VertSplit guibg=#1b2b34
+" hi SignColumn guibg=#1b2b34
+" let g:airline_theme='bubblegum'
+set guifont=Hack:h15
 
-set fillchars="" " show divider chars
+" Search highlight colors:
+hi Search guibg=white guifg=red
+hi Search cterm=NONE ctermfg=grey ctermbg=blue
+
+" show divider chars
+set fillchars+=vert:│
+autocmd ColorScheme * highlight VertSplit cterm=NONE ctermfg=Green ctermbg=NONE
+
 autocmd BufNewFile,BufRead *.boot set syntax=clojure
 autocmd BufNewFile,BufRead .eslintrc set syntax=yaml
 autocmd BufNewFile,BufRead nginx.conf set syntax=nginx
@@ -471,4 +505,21 @@ map gd :bd<cr>
 :nnoremap Gr :grep <cword> %:p:h/*<CR>
 :nnoremap gR :grep '\b<cword>\b' *<CR>
 :nnoremap GR :grep '\b<cword>\b' %:p:h/*<CR>
+
+augroup vimrc
+  autocmd!
+  autocmd ColorScheme * highlight NonText ctermfg=bg guifg=bg
+augroup END
+
+" should autoreload .vimrc changes
+augroup myvimrc
+  au!
+  au BufWritePost .vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc so $MYVIMRC | if has('gui_running') | so $MYGVIMRC | endif
+augroup END
+
+" TODO
+" https://github.com/mileszs/ack.vim
+" https://github.com/jordwalke/VimBox/tree/master/dotVim
+" https://github.com/ktonga/dotfiles/blob/master/nvim/init.vim
+
 
